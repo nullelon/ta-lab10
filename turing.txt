@@ -1,0 +1,510 @@
+0 * * * a1
+
+;truncate leading zeros numA
+a1 0 o r a1
+a1 1 1 r a11
+
+;wait until numB
+a11 _ B r a2
+a11 * * r a11
+
+;truncate leading zeros numB
+a2 0 o r a2
+a2 1 1 r a21
+
+;wait until EOL
+a21 _ _ l a3l
+a21 * * r a21
+
+a3l 0 x l a3l1
+a3l 1 y l a3l1
+a3l y y l a3l
+a3l x x l a3l
+a3l o o l a3l2
+a3l B B l a3l2
+
+a3l2 0 0 l a5A
+a3l2 1 1 l a5A
+a3l2 _ _ r a4r
+a3l2 * * l a3l2
+
+
+a3l1 _ _ r a3r
+a3l1 * * l a3l1
+
+a3r 0 x r a3r1
+a3r 1 y r a3r1
+a3r o o r a3r
+a3r y y r a3r
+a3r x x r a3r
+a3r B B r a5B
+
+
+a3r1 _ _ l a3l
+a3r1 * * r a3r1
+
+
+a4r o o r a4r
+a4r 1 1 r a4r
+a4r 0 0 r a4r
+a4r x 0 r a4rx
+a4r y 1 r a4ry
+a4r B B r a5E
+
+
+a4rx B B r a4rx1
+a4rx * * r a4rx
+
+a4rx1 o o r a4rx1
+a4rx1 1 1 r a4rx1
+a4rx1 0 0 r a4rx1
+a4rx1 y y * a5B
+a4rx1 x 0 * a4l
+
+a4ry B B r a4ry1
+a4ry * * r a4ry
+
+a4ry1 o o r a4ry1
+a4ry1 1 1 r a4ry1
+a4ry1 0 0 r a4ry1
+a4ry1 x x * a5A
+a4ry1 y 1 * a4l
+
+a4l _ _ r a4r
+a4l * * l a4l
+
+; result of comparation
+;move to second phase
+a5A * * * bk1   
+a5B * * * bk2
+a5E * * * bk1 
+
+bk1 _ _ r b1
+bk1 * * l bk1
+
+bk2 _ _ r b2
+bk2 * * l bk2
+
+b1 x 0 r b1
+b1 y 1 r b1
+b1 * * r b1
+b1 _ C l b1l
+
+b2 x 0 r b2
+b2 y 1 r b2
+b2 * * r b2
+b2 _ C l b2l
+
+b1l _ F r c1
+b1l * * l b1l
+
+b2l _ F r c2
+b2l * * l b2l
+
+;c1 a <= b
+;c2 a > b
+
+c1 _ _ l c1a
+c1 * * r c1
+
+c1a o o l c1a
+c1a 0 x l c1x
+c1a 1 y l c1y
+c1a B b l c1B
+c1a _ _ r d1
+c1a * * l c1a
+
+c1x _ x r c1r
+c1x * * l c1x
+
+c1y _ y r c1r
+c1y * * l c1y
+
+c1B _ D r c1r
+c1B * * l c1B
+
+c1r _ _ l c1a
+c1r * * r c1r
+
+
+
+
+c2 _ _ l c2a
+c2 * * r c2
+
+c2a o o l c2a
+c2a 0 x l c2x
+c2a 1 y l c2y
+c2a B b l c2a2
+c2a _ _ r k1
+c2a * * l c2a
+
+c2x _ x r c2r
+c2x * * l c2x
+
+c2y _ y r c2r
+c2y * * l c2y
+
+c2B _ D r c2r
+c2B * * l c2B
+
+c2r _ _ l c2a
+c2r * * r c2r
+
+c2a2 * * l c2a2
+c2a2 F F l c2a21
+c2a21 * * l c2a21
+c2a21 _ P r c2a22
+c2a22 * * r c2a22
+c2a22 F F l c2a3
+
+c2a3 * * l c2a3
+c2a3 y 1 l c2a3y
+c2a3 x 0 l c2a3x
+c2a3 P _ l c2a4
+
+c2a3x * * l c2a3x
+c2a3x _ 0 r c2a3r
+c2a3y * * l c2a3y
+c2a3y _ 1 r c2a3r
+
+c2a3r * * r c2a3r
+c2a3r F F l c2a3
+
+c2a4 * * r c2a4
+c2a4 F _ l c2a41
+c2a41 * * l c2a41 
+c2a41 P _ l c2a41 
+c2a41 _ _ l c2a42  
+
+c2a42 * * l c2a42
+c2a42 _ _ r mult
+
+
+
+k1 x 0 r k1
+k1 y 1 r k1
+k1 D D r k1
+k1 F _ l k2
+
+k2 _ _ r mult
+k2 D _ l k2
+k2 * * l k2
+
+;d1 - copied left, head on left
+
+d1 x 0 r d1 
+d1 y 1 r d1
+d1 D D r d1
+d1 F _ l d2
+
+d2 _ _ r d3
+d2 D _ l d2
+d2 * * l d2
+
+d3 _ _ r 1
+d3 * * r d3
+1 _ _ l 2
+1 * * r 1
+2 0 _ l 3x
+2 1 _ l 3y
+2 _ _ l 7
+3x _ _ l 4x
+3x * * l 3x
+3y _ _ l 4y
+3y * * l 3y
+4x 0 x r d3
+4x 1 y r d3
+4x _ x r d3
+4x * * l 4x    ; skip the x/y's
+4y 0 1 * 5
+4y 1 0 l 4y
+4y _ 1 * 5
+4y * * l 4y    ; skip the x/y's
+5 x x l 6
+5 y y l 6
+5 _ _ l 6
+5 * * r 5
+6 0 x r d3
+6 1 y r d3
+7 x 0 l 7
+7 y 1 l 7
+7 _ _ r d4 
+7 * * l 7
+
+;1
+d2q _ _ r d3q
+d2q D _ l d2q
+d2q * * l d2q
+
+d3q _ _ r 1q
+d3q * * r d3q
+1q _ _ l 2q
+1q * * r 1q
+2q 0 _ l 3xq
+2q 1 _ l 3yq
+2q _ _ l 7q
+3xq _ _ l 4xq
+3xq * * l 3xq
+3yq _ _ l 4yq
+3yq * * l 3yq
+4xq 0 x r d3q
+4xq 1 y r d3q
+4xq _ x r d3q
+4xq * * l 4xq    ; skip the x/y's
+4yq 0 1 * 5q
+4yq 1 0 l 4yq
+4yq _ 1 * 5q
+4yq * * l 4yq    ; skip the x/y's
+5q x x l 6q
+5q y y l 6q
+5q _ _ l 6q
+5q * * r 5q
+6q 0 x r d3q
+6q 1 y r d3q
+7q x 0 l 7q
+7q y 1 l 7q
+7q _ _ r d4q 
+7q * * l 7q
+;1
+;d4 ready to copy number
+
+d4 * * l d5
+
+d4q * * l d52
+
+d5 * * r d51
+d51 * * r d51
+d51 _ 0 l d52
+d52 * * l d52
+
+d52 _ H r d6
+
+
+d6 0 _ r d6x
+d6 1 _ r d6y
+d6 _ _ r d6
+
+d6x C C r d6xc
+d6x * * r d6x
+
+d6y C C r d6yc
+d6y * * r d6y
+
+d6xc _ x l d6l
+d6xc * * r d6xc
+
+d6yc _ y l d6l
+d6yc * * r d6yc
+
+d6l _ _ l d6l1
+d6l * * l d6l
+
+d6l1 _ _ l d6l1
+d6l1 H _ r e1
+d6l1 * * l d6l2
+
+d6l2 H H r d6
+d6l2 * * l d6l2
+
+;e1 - finish up
+
+e1 _ _ r e1
+e1 * * * e2
+
+e2 o 0 r e2
+e2 y 1 r e2
+e2 x 0 r e2
+e2 b _ r e2
+e2 C _ r e2
+e2 _ _ * halt
+
+; Set up tally
+mult * * l 101
+101 _ _ l 102
+102 _ 0 r 103
+103 _ _ r 1010
+
+; Find end of num1
+1010 _ _ l 1011
+1010 x x l 1011
+1010 0 0 r 1010
+1010 1 1 r 1010
+
+
+; If last digit of num1 is 0, multiply num2 by 2
+1011 0 x r 20
+; If last digit of num1 is 1, add num2 to tally and then multiply num2 by 2
+1011 1 x r 30
+
+
+; Multiply num2 by 2
+20 _ _ r 20
+20 x x r 20
+20 * * r 21
+21 _ _ l m1 ; Multiplication by 2 done, return to end of num1
+21 * * r 21
+25 _ _ l 26
+25 * * l 25
+26 _ _ r 80 ; Finished multiplying. Clean up
+26 x x l 26
+26 0 0 * 1011
+26 1 1 * 1011
+
+; Add num2 to tally
+30 _ _ r 30
+30 x x r 30
+30 * * r 31
+31 _ _ l 32
+31 * * r 31
+32 0 o l 40 ; Add a zero
+32 1 i l 50 ; Add a one
+32 o o l 32
+32 i i l 32
+32 _ _ r 70 ; Finished adding
+
+; Adding a 0 to tally
+40 _ _ l 41
+40 * * l 40 ; Found end of num2
+41 _ _ l 41
+41 * * l 42 ; Found start of num1
+42 _ _ l 43 ; Found end of num1
+42 * * l 42
+43 o o l 43
+43 i i l 43
+43 0 o r 44
+43 1 i r 44
+43 _ o r 44
+44 _ _ r 45 ; Found end of tally
+44 * * r 44
+45 _ _ r 45
+45 * * r 46 ; Found start of num1
+46 _ _ r 47 ; Found end of num1
+46 * * r 46
+47 _ _ r 47
+47 * * r 48
+48 _ _ l 32 ; Found end of num2
+48 * * r 48
+
+; Adding a 1 to tally
+50 _ _ l 51 ; Found end of num2
+50 * * l 50 
+51 _ _ l 51
+51 * * l 52 ; Found start of num1
+52 _ _ l 53 ; Found end of num1
+52 * * l 52
+53 o o l 53
+53 i i l 53
+53 _ i r 55
+53 0 i r 55 ; return to num2
+53 1 o l 54
+54 0 1 r 55
+54 1 0 l 54
+54 _ 1 r 55
+55 _ _ r 56 ; Found end of tally
+55 * * r 55
+56 _ _ r 56
+56 * * r 57 ; Found start of num1
+57 _ _ r 58 ; Found end of num1
+57 * * r 57
+58 _ _ r 58
+58 * * r 59
+59 _ _ l 32 ; Found end of num2
+59 * * r 59
+
+; Finished adding, clean up
+70 i 1 r 70
+70 o 0 r 70
+70 _ _ l 71
+71 _ _ l 72 ; Found end of num2
+71 * * l 71
+72 _ _ l 72
+72 * * l 73 ; Found start of num1
+73 _ _ l 74
+73 * * l 73
+74 o 0 l 74
+74 i 1 l 74
+74 * * r 75 ; Finished cleaning up tally
+75 _ _ r 76
+75 * * r 75
+76 _ _ r 20 ; Multiply num2 by 2
+76 * * r 76
+
+; Finished multiplying, clean up
+80 x _ r 80
+80 _ _ r 81
+81 _ _ l 82
+81 * _ r 81
+82 _ _ l 82
+82 * * * m2
+
+;m1 shift return to 25 from right
+m1 * * * m10
+
+m10 0 0 l m10
+m10 1 0 l m11
+m10 _ 0 l m1s
+m10 x 0 l m1x
+m10 i 0 l m1i
+
+m11 0 1 l m10
+m11 1 1 l m11
+m11 _ 1 l m1s
+m11 x 1 l m1x
+m11 i 1 l m1i
+
+m1s 0 _ l m10
+m1s 1 _ l m11
+m1s _ _ r m1ss
+m1s x _ l m1x
+m1s i _ l m1i
+
+m1x 0 x l m10
+m1x 1 x l m11
+m1x _ x l m1s
+m1x x x l m1x
+m1x i x l m1i
+
+m1i 0 i l m10
+m1i 1 i l m11
+m1i _ i l m1s
+m1i x i l m1x
+m1i i i l m1i
+
+m1ss _ _ r m1ss1
+m1ss * * r m1ss
+
+m1ss1 _ _ r m1ss2
+m1ss1 * * r m1ss1
+
+m1ss2 _ _ l 25
+m1ss2 * * r m1ss2
+
+m2 * * l m2
+m2 _ E * s
+
+s * * r s
+s b * l s1
+
+s1 * * l s1
+s1 _ _ l s2
+s1 0 x l s1x
+s1 1 y l s1y
+
+s1x * * l s1x
+s1y * * l s1y
+s1x1 * * l s1x1
+s1y1 * * l s1y1
+s1x E E l s1x1
+s1y E E l s1y1
+s1x1 _ 0 r s1r
+s1y1 _ 1 r s1r
+
+s1r * * r s1r
+s1r b b l s1
+
+s2 * * l s2
+s2 E _ l s3
+s3 * * l s3
+s3 _ _ r d2q
+  
